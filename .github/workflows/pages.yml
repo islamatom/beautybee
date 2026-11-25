@@ -7,6 +7,13 @@ jobs:
     environment: {name: github-pages}
     steps:
       - uses: actions/checkout@v4
+      - name: Copier les photos
+        run: |
+          mkdir -p img
+          for f in index.html algerie/index.html; do grep -o 'https://beautybee-7730.com/wp-content/uploads/[^)" ]*' $f; done | sort -u | while read u; do
+            n=$(basename "$u"); curl -sL -A "Mozilla/5.0" "$u" -o "img/$n" || true
+            sed -i "s#$u#/beautybee/img/$n#g" index.html algerie/index.html
+          done
       - uses: actions/configure-pages@v5
         with: {enablement: true}
       - uses: actions/upload-pages-artifact@v3
